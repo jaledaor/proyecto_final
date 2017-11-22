@@ -4,9 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="todo_jaledaor.pruebatodolist.vistas.MainActivity"
-    android:orientation="vertical">
-    
-    <include layout="@layout/app_bar" />
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
+
+    <include layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/task_list"

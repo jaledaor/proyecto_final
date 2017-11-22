@@ -2,21 +2,26 @@ package todo_jaledaor.pruebatodolist.vistas;
 
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.view.GravityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -56,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        android.support.v7.widget.Toolbar toolbar =(android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         allTask = new ArrayList<Task>();
         mAuth_control = FirebaseAuth.getInstance();
         uid = "";
@@ -77,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                 final EditText category_input = (EditText) mView.findViewById(R.id.category_input);
                 final TextView fecha_elegida = (TextView) mView.findViewById(R.id.fecha_elegida);
 
-                SimpleDateFormat timeStampFormat = new SimpleDateFormat("yy/MM/dd");
+                SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy/MM/dd");
                 Date myDate = new Date();
                 String filename = timeStampFormat.format(myDate);
                 fecha_elegida.setText(filename);
@@ -164,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
             respondida = dataSnapshot.child("respondida").getValue(Boolean.class);
         }
         allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida));
-        Toast.makeText(MainActivity.this, ""+pregunta, Toast.LENGTH_LONG).show();
         recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allTask);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
@@ -182,5 +188,26 @@ public class MainActivity extends AppCompatActivity {
             recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allTask);
             recyclerView.setAdapter(recyclerViewAdapter);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.settings_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.salida) {
+            Intent intent = new Intent(this, AuthActivity.class);
+            startActivity(intent);
+            //TODO: llamar el presenter el metodo de signout de firebase
+            finish();
+        }
+
+
+        return super.onOptionsItemSelected(item);
     }
 }
