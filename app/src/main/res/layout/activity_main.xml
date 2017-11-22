@@ -9,37 +9,40 @@
 
     <include layout="@layout/toolbar" />
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/task_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_above="@+id/add_task_wrapper"
-        android:layout_marginBottom="12dp"
         android:orientation="vertical"
-        android:scrollbars="none"/>
+        android:layout_marginBottom="60dp"/>
     <LinearLayout
-        android:id="@+id/add_task_wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="horizontal"
+        android:weightSum="1">
         <EditText
             android:id="@+id/add_task_box"
             android:layout_width="0dp"
             android:inputType="text"
             android:layout_height="wrap_content"
-            android:layout_weight="9"
+            android:layout_weight="0.8"
             android:visibility="invisible"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/add_task_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="0.2"
             android:backgroundTint="@color/colorPrimary"
-            android:src="@android:drawable/ic_input_add" />
+            android:src="@android:drawable/ic_input_add"
+            android:layout_marginLeft="20dp"/>
         <!--<Button
             android:id="@+id/add_task_button"
             android:layout_width="0dp"
@@ -49,7 +52,7 @@
             android:layout_margin="0dp"
             android:layout_weight="3"/>-->
     </LinearLayout>
-
+    </FrameLayout>
 </LinearLayout>
 
 
