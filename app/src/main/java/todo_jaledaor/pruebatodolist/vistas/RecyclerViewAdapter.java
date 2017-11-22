@@ -11,6 +11,7 @@ import todo_jaledaor.pruebatodolist.R;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
     private List<Task> task;
     protected Context context;
+
     public RecyclerViewAdapter(Context context, List<Task> task) {
         this.task = task;
         this.context = context;
@@ -30,6 +31,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     }
     @Override
     public int getItemCount() {
+
         return this.task.size();
     }
 }

@@ -1,18 +1,26 @@
 package todo_jaledaor.pruebatodolist.vistas;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,9 +43,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import todo_jaledaor.pruebatodolist.R;
+import todo_jaledaor.pruebatodolist.fragmentos.misPreguntas;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -61,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        android.support.v7.widget.Toolbar toolbar =(android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+        android.support.v7.widget.Toolbar toolbar =findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         allTask = new ArrayList<Task>();
         mAuth_control = FirebaseAuth.getInstance();
@@ -69,20 +77,37 @@ public class MainActivity extends AppCompatActivity {
         uid = mAuth_control.getCurrentUser().getUid().toString();
         database_control = FirebaseDatabase.getInstance();
         reference_control = database_control.getReference("usuarios/" + uid + "/Tareas");
+
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        PagerAdapter pagerAdapter =
+                new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
+        viewPager.setAdapter(pagerAdapter);
+
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+        // Iterate over all tabs and set the custom view
+        for (int i = 0; i < tabLayout.getTabCount(); i++) {
+            TabLayout.Tab tab = tabLayout.getTabAt(i);
+            tab.setCustomView(pagerAdapter.getTabView(i));
+        }
+
         addTaskBox = (EditText) findViewById(R.id.add_task_box);
         recyclerView = (RecyclerView) findViewById(R.id.task_list);
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
-        FloatingActionButton addTaskButton = (FloatingActionButton) findViewById(R.id.add_task_button);
+        FloatingActionButton addTaskButton = findViewById(R.id.add_task_button);
         addTaskButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.dialog_datepicker, null);
-                final EditText question_input = (EditText) mView.findViewById(R.id.question_input);
-                final EditText category_input = (EditText) mView.findViewById(R.id.category_input);
-                final TextView fecha_elegida = (TextView) mView.findViewById(R.id.fecha_elegida);
+                final EditText question_input = mView.findViewById(R.id.question_input);
+                final EditText category_input = mView.findViewById(R.id.category_input);
+                final TextView fecha_elegida = mView.findViewById(R.id.fecha_elegida);
 
                 SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy/MM/dd");
                 Date myDate = new Date();
@@ -209,5 +234,48 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+
+    class PagerAdapter extends FragmentPagerAdapter {
+
+        String tabTitles[] = new String[] { "Tab One", "Tab Two" };
+        Context context;
+
+        public PagerAdapter(FragmentManager fm, Context context) {
+            super(fm);
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+
+            switch (position) {
+                case 0:
+                    return new misPreguntas();
+                case 1:
+                    return new misPreguntas();
+            }
+
+            return null;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            // Generate title based on item position
+            return tabTitles[position];
+        }
+
+        public View getTabView(int position) {
+            View tab = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_tab, null);
+            TextView tv = (TextView) tab.findViewById(R.id.custom_text);
+            tv.setText(tabTitles[position]);
+            return tab;
+        }
+
     }
 }
