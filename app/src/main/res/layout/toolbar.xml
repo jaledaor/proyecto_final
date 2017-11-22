@@ -19,37 +19,58 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+
                 <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:src="@mipmap/ic_launcher" />
 
+
             </FrameLayout>
+
 
         </android.support.v7.widget.Toolbar>
 
 
     </android.support.design.widget.AppBarLayout>
+
     <android.support.design.widget.TabLayout
 
         android:id="@+id/tab_layout"
-        app:tabMode="fixed"
-        android:layout_below="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
         android:background="?attr/colorPrimary"
         android:elevation="6dp"
-        app:tabTextColor="#d3d3d3"
-        app:tabSelectedTextColor="#ffffff"
-        app:tabIndicatorColor="#ff00ff"
         android:minHeight="?attr/actionBarSize"
-        />
+        app:tabIndicatorColor="#ff00ff"
+        app:tabMode="fixed"
+        app:tabSelectedTextColor="#ffffff"
+        app:tabTextColor="#d3d3d3" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_below="@+id/tab_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tab_layout" />
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/add_task_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="30dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:src="@android:drawable/ic_media_play"
+            android:layout_gravity="bottom|right"/>
+
+    </FrameLayout>
+
 </LinearLayout>

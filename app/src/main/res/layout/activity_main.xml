@@ -35,14 +35,14 @@
             android:layout_weight="0.8"
             android:visibility="invisible"/>
 
-        <android.support.design.widget.FloatingActionButton
+        <!--<android.support.design.widget.FloatingActionButton
             android:id="@+id/add_task_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:backgroundTint="@color/colorPrimary"
             android:src="@android:drawable/ic_input_add"
-            android:layout_marginLeft="20dp"/>
+            android:layout_marginLeft="20dp"/>-->
         <!--<Button
             android:id="@+id/add_task_button"
             android:layout_width="0dp"
