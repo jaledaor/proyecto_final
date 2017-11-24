@@ -25,9 +25,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     }
     @Override
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
-        holder.task_title.setText(task.get(position).getPregunta());
-        holder.category.setText(task.get(position).getCategoria());
-        holder.task_date.setText(task.get(position).getFecha());
+        holder.task_title.setText("pregunta: "+task.get(position).getPregunta());
+        holder.task_answer.setText("respuesta: "+task.get(position).getRespuesta());
+        holder.category.setText("categoria: "+task.get(position).getCategoria());
+        holder.task_date.setText("fecha: "+task.get(position).getFecha());
     }
     @Override
     public int getItemCount() {

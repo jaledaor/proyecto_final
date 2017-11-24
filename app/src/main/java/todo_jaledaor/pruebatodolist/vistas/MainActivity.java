@@ -46,6 +46,7 @@ import java.util.List;
 
 import todo_jaledaor.pruebatodolist.R;
 import todo_jaledaor.pruebatodolist.fragmentos.misPreguntas;
+import todo_jaledaor.pruebatodolist.fragmentos.otrasPreguntas;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -53,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapter recyclerViewAdapter;
     private EditText addTaskBox;
-    String uid;
+    String uid="";
+    String uid_resp="";
     public String pregunta = "";
     public String respuesta = "";
     public String fecha = "";
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         uid = "";
         uid = mAuth_control.getCurrentUser().getUid().toString();
         database_control = FirebaseDatabase.getInstance();
-        reference_control = database_control.getReference("usuarios/" + uid + "/Tareas");
+        reference_control = database_control.getReference("Tareas");
 
         // Get the ViewPager and set it's PagerAdapter so that it can display items
         ViewPager viewPager = findViewById(R.id.viewpager);
@@ -138,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                                 taskObject.setCategoria(categoria);
                                 taskObject.setRespuesta("");
                                 taskObject.setFecha(fecha_elegida.getText().toString());
+                                taskObject.setUid_preg(uid);
+                                taskObject.setUid_resp("");
                                 taskObject.setRespondida(false);
 
                                 reference_control.push().setValue(taskObject);
@@ -185,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getAllTask(DataSnapshot dataSnapshot) {
 
-        reference_control = database_control.getReference("usuarios/"+uid+"/Tareas");
+        reference_control = database_control.getReference("Tareas");
 
         for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
             /*Task pregunta = singleSnapshot.getValue(Task.class);*/
@@ -195,7 +199,7 @@ public class MainActivity extends AppCompatActivity {
             fecha = dataSnapshot.child("fecha").getValue(String.class);
             respondida = dataSnapshot.child("respondida").getValue(Boolean.class);
         }
-        allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida));
+        allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida,uid,uid_resp));
         recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allTask);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
@@ -228,7 +232,6 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.salida) {
             Intent intent = new Intent(this, AuthActivity.class);
             startActivity(intent);
-            //TODO: llamar el presenter el metodo de signout de firebase
             finish();
         }
 
@@ -256,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
 
             switch (position) {
                 case 0:
-                    return new misPreguntas();
+                    return new otrasPreguntas();
                 case 1:
                     return new misPreguntas();
             }

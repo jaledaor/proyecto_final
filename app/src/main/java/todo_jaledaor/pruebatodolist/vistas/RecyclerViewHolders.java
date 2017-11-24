@@ -23,22 +23,24 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
     public TextView task_title;
     public TextView task_date;
     public TextView category;
+    public TextView task_answer;
     private List<Task> taskObject;
     public RecyclerViewHolders(final View itemView, final List<Task> taskObject) {
         super(itemView);
         this.taskObject = taskObject;
         task_title = (TextView)itemView.findViewById(R.id.task_title);
+        task_answer = (TextView)itemView.findViewById(R.id.task_answer);
         task_btn = (Button)itemView.findViewById(R.id.task_btn);
         task_date = (TextView)itemView.findViewById(R.id.task_date);
         category = (TextView)itemView.findViewById(R.id.task_category);
         task_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), "Answer icon has been clicked", Toast.LENGTH_LONG).show();
+                Toast.makeText(v.getContext(), getAdapterPosition()+"Answer icon has been clicked", Toast.LENGTH_LONG).show();
                 String taskTitle = taskObject.get(getAdapterPosition()).getPregunta();
                 Log.d(TAG, "Task Title " + taskTitle);
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-                Query applesQuery = ref.orderByChild("task").equalTo(taskTitle);
+                Query applesQuery = ref.orderByChild("Tareas").equalTo(taskTitle);
                 applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {

@@ -23,23 +23,25 @@ import todo_jaledaor.pruebatodolist.R;
 import todo_jaledaor.pruebatodolist.vistas.RecyclerViewAdapter;
 import todo_jaledaor.pruebatodolist.vistas.Task;
 
-public class misPreguntas extends Fragment {
+public class otrasPreguntas extends Fragment {
     private RecyclerViewAdapter recyclerViewAdapter;
     private FirebaseAuth mAuth_control;
     private FirebaseDatabase database_control;
     private DatabaseReference reference_control;
     private List<Task> allTask;
-    public String uid="";
-    public String uid2="";
+    String uid = "";
+    String uid2 = "";
+    boolean valido=false;
     public String uid_preg = "";
     public String uid_resp = "";
     public String pregunta = "";
     public String respuesta = "";
     public String fecha = "";
-    public String categoria ="";
+    public String categoria = "";
     public Boolean respondida = false;
     RecyclerView rv;
-    public misPreguntas() {
+
+    public otrasPreguntas() {
         // Required empty public constructor
     }
 
@@ -88,11 +90,9 @@ public class misPreguntas extends Fragment {
         // Inflate the layout for this fragment
 
 
-
-
         View rootView = inflater.inflate(R.layout.fragment_blank, container, false);
 
-        rv= rootView.findViewById(R.id.rv_recycler_view);
+        rv = rootView.findViewById(R.id.rv_recycler_view);
         rv.setHasFixedSize(true);
 
         recyclerViewAdapter = new RecyclerViewAdapter(getContext(), allTask);
@@ -108,23 +108,22 @@ public class misPreguntas extends Fragment {
 
     private void getAllTask(DataSnapshot dataSnapshot) {
 
-        reference_control = database_control.getReference("Tareas");
-        uid2 = dataSnapshot.child("uid_preg").getValue(String.class);
-        if (uid.equals(uid2)) {
-            for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-                uid_preg = dataSnapshot.child("uid_preg").getValue(String.class);
-                uid_resp = dataSnapshot.child("uid_resp").getValue(String.class);
-                pregunta = dataSnapshot.child("pregunta").getValue(String.class);
-                respuesta = dataSnapshot.child("respuesta").getValue(String.class);
-                categoria = dataSnapshot.child("categoria").getValue(String.class);
-                fecha = dataSnapshot.child("fecha").getValue(String.class);
-                respondida = dataSnapshot.child("respondida").getValue(Boolean.class);
-            }
-            allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida, uid_preg, uid_resp));
+            reference_control = database_control.getReference("Tareas");
+            uid2 = dataSnapshot.child("uid_preg").getValue(String.class);
+            if (!uid.equals(uid2)) {
+                for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
+                    uid_preg = dataSnapshot.child("uid_preg").getValue(String.class);
+                    uid_resp = dataSnapshot.child("uid_resp").getValue(String.class);
+                    pregunta = dataSnapshot.child("pregunta").getValue(String.class);
+                    respuesta = dataSnapshot.child("respuesta").getValue(String.class);
+                    categoria = dataSnapshot.child("categoria").getValue(String.class);
+                    fecha = dataSnapshot.child("fecha").getValue(String.class);
+                    respondida = dataSnapshot.child("respondida").getValue(Boolean.class);
+                }
+                allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida, uid_preg, uid_resp));
 
-        }
+            }
         recyclerViewAdapter = new RecyclerViewAdapter(getActivity(), allTask);
         rv.setAdapter(recyclerViewAdapter);
+        }
     }
-
-}
