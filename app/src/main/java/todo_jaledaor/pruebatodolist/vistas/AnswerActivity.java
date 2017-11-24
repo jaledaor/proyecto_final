@@ -38,10 +38,8 @@ import java.util.Date;
 import java.util.List;
 
 import todo_jaledaor.pruebatodolist.R;
-import todo_jaledaor.pruebatodolist.fragmentos.misPreguntas;
-import todo_jaledaor.pruebatodolist.fragmentos.otrasPreguntas;
 
-public class MainActivity extends AppCompatActivity {
+public class AnswerActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -49,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private EditText addTaskBox;
     String uid = "";
     String uid_resp = "";
-    String answer="";
     public String pregunta = "";
     public String respuesta = "";
     public String fecha = "";
@@ -74,22 +71,6 @@ public class MainActivity extends AppCompatActivity {
         database_control = FirebaseDatabase.getInstance();
         reference_control = database_control.getReference("Tareas");
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
-        ViewPager viewPager = findViewById(R.id.viewpager);
-        PagerAdapter pagerAdapter =
-                new PagerAdapter(getSupportFragmentManager(), MainActivity.this);
-        viewPager.setAdapter(pagerAdapter);
-
-        // Give the TabLayout the ViewPager
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        tabLayout.setupWithViewPager(viewPager);
-
-        // Iterate over all tabs and set the custom view
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TabLayout.Tab tab = tabLayout.getTabAt(i);
-            tab.setCustomView(pagerAdapter.getTabView(i));
-        }
-
         addTaskBox = (EditText) findViewById(R.id.add_task_box);
         recyclerView = (RecyclerView) findViewById(R.id.task_list);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -99,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(AnswerActivity.this);
                 View mView = getLayoutInflater().inflate(R.layout.dialog_question, null);
                 final EditText question_input = mView.findViewById(R.id.question_input);
                 final EditText category_input = mView.findViewById(R.id.category_input);
@@ -119,12 +100,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 pregunta = question_input.getText().toString();
                                 if (TextUtils.isEmpty(pregunta)) {
-                                    Toast.makeText(MainActivity.this, "No debe estar vacia la pregunta", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AnswerActivity.this, "No debe estar vacia la pregunta", Toast.LENGTH_LONG).show();
                                     return;
                                 }
                                 categoria = category_input.getText().toString();
                                 if (TextUtils.isEmpty(categoria)) {
-                                    Toast.makeText(MainActivity.this, "No debe estar vacia la categoria", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AnswerActivity.this, "No debe estar vacia la categoria", Toast.LENGTH_LONG).show();
                                     return;
                                 }
 
@@ -168,7 +149,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
                 taskDeletion(dataSnapshot);
-                getAllTask(dataSnapshot);
             }
 
             @Override
@@ -194,21 +174,21 @@ public class MainActivity extends AppCompatActivity {
             respondida = dataSnapshot.child("respondida").getValue(Boolean.class);
         }
         allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida, uid, uid_resp));
-        recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allTask);
+        recyclerViewAdapter = new RecyclerViewAdapter(AnswerActivity.this, allTask);
         recyclerView.setAdapter(recyclerViewAdapter);
     }
 
     private void taskDeletion(DataSnapshot dataSnapshot) {
         for (DataSnapshot data : dataSnapshot.getChildren()) {
-            answer = dataSnapshot.child("pregunta").getValue().toString();
+            String pregunta = data.child("pregunta").getValue().toString();
             for (int i = 0; i < allTask.size(); i++) {
-                if (allTask.get(i).getPregunta().equals(answer)) {
+                if (allTask.get(i).getPregunta().equals(pregunta)) {
                     allTask.remove(i);
                 }
             }
-            Log.d(TAG, "Task title " + answer);
+            Log.d(TAG, "Task title " + pregunta);
             recyclerViewAdapter.notifyDataSetChanged();
-            recyclerViewAdapter = new RecyclerViewAdapter(MainActivity.this, allTask);
+            recyclerViewAdapter = new RecyclerViewAdapter(AnswerActivity.this, allTask);
             recyclerView.setAdapter(recyclerViewAdapter);
         }
     }
@@ -231,48 +211,5 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
-    }
-
-    class PagerAdapter extends FragmentPagerAdapter {
-
-        String tabTitles[] = new String[]{"Preguntas De Otros Usuarios", "Mis Preguntas"};
-        Context context;
-
-        public PagerAdapter(FragmentManager fm, Context context) {
-            super(fm);
-            this.context = context;
-        }
-
-        @Override
-        public int getCount() {
-            return tabTitles.length;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-
-            switch (position) {
-                case 0:
-                    return new otrasPreguntas();
-                case 1:
-                    return new misPreguntas();
-            }
-
-            return null;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            // Generate title based on item position
-            return tabTitles[position];
-        }
-
-        public View getTabView(int position) {
-            View tab = LayoutInflater.from(MainActivity.this).inflate(R.layout.custom_tab, null);
-            TextView tv = (TextView) tab.findViewById(R.id.custom_text);
-            tv.setText(tabTitles[position]);
-            return tab;
-        }
-
     }
 }

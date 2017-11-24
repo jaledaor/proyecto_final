@@ -1,5 +1,6 @@
 package todo_jaledaor.pruebatodolist.vistas;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,10 +30,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
         holder.task_answer.setText("respuesta: "+task.get(position).getRespuesta());
         holder.category.setText("categoria: "+task.get(position).getCategoria());
         holder.task_date.setText("fecha: "+task.get(position).getFecha());
+
+
     }
     @Override
     public int getItemCount() {
-
         return this.task.size();
     }
+
+
 }

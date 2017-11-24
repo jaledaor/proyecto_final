@@ -24,7 +24,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:src="@mipmap/ic_launcher" />
+                    android:src="@drawable/ic_description_black_48dp" />
 
 
             </FrameLayout>
@@ -68,7 +68,7 @@
             android:layout_marginRight="30dp"
             android:layout_marginBottom="30dp"
             android:backgroundTint="@color/colorPrimary"
-            android:src="@android:drawable/ic_media_play"
+            android:src="@drawable/ic_add_circle_black_48dp"
             android:layout_gravity="bottom|right"/>
 
     </FrameLayout>

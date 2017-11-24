@@ -24,4 +24,7 @@
     <string name="fecha_select">mm/dd/yy</string>
     <string name="success_login_msg">Exito</string>
     <string name="ingreso">Ingreso al alert</string>
+    <string name="pregunta_dialog">Pregunta:</string>
+    <string name="category_dialog">Categoria:</string>
+    <string name="inserta_respuesta">Digita tu Respuesta:</string>
 </resources>
