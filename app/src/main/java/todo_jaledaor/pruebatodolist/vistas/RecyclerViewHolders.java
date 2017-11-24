@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,9 +37,14 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
     String answer_dialog="";
     String question="";
     String category_dialog="";
+    String fecha_dialog="";
+    String uid_preg_dialog="";
+    String uid_resp_dialog="";
+    boolean respondida_dialog=false;
     TextView txt_question;
     TextView txt_category;
     EditText answer_input;
+
     private FirebaseDatabase database_control;
     private DatabaseReference reference_control;
     private FirebaseAuth mAuth_control;
@@ -61,9 +67,26 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
         task_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), getAdapterPosition() + " Answer icon has been clicked", Toast.LENGTH_LONG).show();
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                View view=v.inflate(v.getContext(),R.layout.dialog_answer, null);
+
+                Intent intent = new Intent(v.getContext(), AnswerActivity.class);
+                question = taskObject.get(getAdapterPosition()).getPregunta();
+                category_dialog = taskObject.get(getAdapterPosition()).getCategoria();
+                fecha_dialog = taskObject.get(getAdapterPosition()).getFecha();
+                uid_preg_dialog = taskObject.get(getAdapterPosition()).getUid_preg();
+                uid_resp_dialog=taskObject.get(getAdapterPosition()).getUid_resp();
+                respondida_dialog=taskObject.get(getAdapterPosition()).isRespondida();
+
+
+                intent.putExtra("pregunta_review", question);
+                intent.putExtra("categoria_review", category_dialog);
+                intent.putExtra("fecha_review", fecha_dialog);
+                intent.putExtra("uid_preg_review", uid_preg_dialog);
+                intent.putExtra("uid_resp_review", uid_resp_dialog);
+                intent.putExtra("respondida_review", respondida_dialog);
+                v.getContext().startActivity(intent);
+                /*
+                AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+                View view=itemView.inflate(itemView.getContext(),R.layout.dialog_answer,null);
                 question = taskObject.get(getAdapterPosition()).getPregunta();
                 category_dialog = taskObject.get(getAdapterPosition()).getCategoria();
 
@@ -75,14 +98,14 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
                 txt_question.setText("Pregunta: "+question);
                 txt_category.setText("Respuesta: "+category_dialog);
 
+
+
                 builder.setView(view)
                         .setTitle("Responder Pregunta")
                         .setPositiveButton("OK", new AlertDialog.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
                                 answer_dialog=answer_input.getText().toString();
-
                             }
                         })
                         .setNegativeButton("Cancel", new AlertDialog.OnClickListener() {
@@ -94,19 +117,13 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
 
                 final AlertDialog dialog = builder.create();
                 dialog.show();
-
                     Toast.makeText(v.getContext(),"root -->"+answer_dialog,Toast.LENGTH_LONG).show();
                     Log.d(TAG, "Task Title " + question);
                     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tareas");
-
                     Query applesQuery = ref.orderByChild("pregunta").equalTo(question);
-                    /*ref.child("respondida").setValue(true);
-                    ref.child("uid_resp").setValue(uid);*/
-                Toast.makeText(v.getContext(),"root -->"+ ref.getDatabase(),Toast.LENGTH_LONG).show();
                     applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-
                             for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
                                 appleSnapshot.getRef().child("uid_resp").setValue(uid);
                                 appleSnapshot.getRef().child("respondida").setValue(true);
@@ -118,9 +135,14 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder{
                             Log.e(TAG, "onCancelled", databaseError.toException());
                         }
                     });
-                }
+                }*/
 
+
+            }
+
+            ;
 
         });
     }
+
 }

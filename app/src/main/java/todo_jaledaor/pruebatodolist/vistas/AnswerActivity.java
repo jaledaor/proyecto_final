@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 
 import java.text.SimpleDateFormat;
@@ -41,7 +44,6 @@ import todo_jaledaor.pruebatodolist.R;
 
 public class AnswerActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
-    private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private RecyclerViewAdapter recyclerViewAdapter;
     private EditText addTaskBox;
@@ -53,145 +55,101 @@ public class AnswerActivity extends AppCompatActivity {
     public String categoria = "";
     public Boolean respondida = false;
 
+    String pregunta_r = "";
+    String categoria_r ="";
+    String fecha_r ="";
+    String uid_preg_r ="";
+    String uid_resp_r ="";
+    boolean respondida_r=false;
+
+    String respuesta_insert="";
+
     private FirebaseAuth mAuth_control;
     private FirebaseDatabase database_control;
     private DatabaseReference reference_control;
     private List<Task> allTask;
 
+
+    TextView pregunta_screen;
+    TextView catergoria_screen;
+    TextView fecha_screen;
+    TextView respondida_screen;
+    TextView uid_preg_screen;
+    TextView uid_resp_screen;
+    EditText respuesta_screen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_answer);
         android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbar);
+
+        pregunta_screen = findViewById(R.id.pregunta_activity);
+        catergoria_screen = findViewById(R.id.categoria_activity);
+        fecha_screen = findViewById(R.id.fecha_activity);
+        respondida_screen = findViewById(R.id.respondida_activity);
+        uid_preg_screen = findViewById(R.id.uid_preg_activity);
+        uid_resp_screen = findViewById(R.id.uid_resp_activity);
+        respuesta_screen = findViewById(R.id.answer_input);
+
+
         setSupportActionBar(toolbar);
-        allTask = new ArrayList<Task>();
         mAuth_control = FirebaseAuth.getInstance();
         uid = "";
         uid = mAuth_control.getCurrentUser().getUid().toString();
         database_control = FirebaseDatabase.getInstance();
         reference_control = database_control.getReference("Tareas");
+        Button btn_responder = findViewById(R.id.btn_responder);
+        Intent intent = getIntent();
 
-        addTaskBox = (EditText) findViewById(R.id.add_task_box);
-        recyclerView = (RecyclerView) findViewById(R.id.task_list);
-        linearLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        FloatingActionButton addTaskButton = findViewById(R.id.add_task_button);
-        addTaskButton.setOnClickListener(new View.OnClickListener() {
+        pregunta_r = intent.getStringExtra("pregunta_review");
+        categoria_r = intent.getStringExtra("categoria_review");
+        fecha_r = intent.getStringExtra("fecha_review");
+        uid_preg_r = intent.getStringExtra("uid_preg_review");
+        uid_resp_r = intent.getStringExtra("uid_resp_review");
+        respondida_r = intent.getBooleanExtra("respondida_dialog", false);
+
+
+        pregunta_screen.setText(pregunta_r);
+        catergoria_screen.setText(categoria_r);
+        fecha_screen.setText(fecha_r);
+        respondida_screen.setText("" + respondida_r);
+        uid_preg_screen.setText(uid_preg_r);
+        uid_resp_screen.setText(uid_resp_r);
+
+
+        btn_responder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(AnswerActivity.this);
-                View mView = getLayoutInflater().inflate(R.layout.dialog_question, null);
-                final EditText question_input = mView.findViewById(R.id.question_input);
-                final EditText category_input = mView.findViewById(R.id.category_input);
-                final TextView fecha_elegida = mView.findViewById(R.id.fecha_elegida);
+                respuesta_insert = respuesta_screen.getText().toString();
 
-                SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy/MM/dd");
-                Date myDate = new Date();
-                String filename = timeStampFormat.format(myDate);
-                fecha_elegida.setText(filename);
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Tareas");
+                Query applesQuery = ref.orderByChild("pregunta").equalTo(pregunta_r);
+                applesQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot : dataSnapshot.getChildren()) {
+                            appleSnapshot.getRef().child("uid_resp").setValue(uid);
+                            appleSnapshot.getRef().child("respondida").setValue(true);
+                            appleSnapshot.getRef().child("respuesta").setValue(respuesta_insert);
+                        }
+                    }
 
-                builder.setView(mView)
-                        .setTitle("Adicionar Pregunta")
-                        .setPositiveButton("OK", new AlertDialog.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-
-                                pregunta = question_input.getText().toString();
-                                if (TextUtils.isEmpty(pregunta)) {
-                                    Toast.makeText(AnswerActivity.this, "No debe estar vacia la pregunta", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
-                                categoria = category_input.getText().toString();
-                                if (TextUtils.isEmpty(categoria)) {
-                                    Toast.makeText(AnswerActivity.this, "No debe estar vacia la categoria", Toast.LENGTH_LONG).show();
-                                    return;
-                                }
-
-                                Task taskObject = new Task();
-                                taskObject.setPregunta(pregunta);
-                                taskObject.setCategoria(categoria);
-                                taskObject.setRespuesta("");
-                                taskObject.setFecha(fecha_elegida.getText().toString());
-                                taskObject.setUid_preg(uid);
-                                taskObject.setUid_resp("");
-                                taskObject.setRespondida(false);
-
-                                reference_control.push().setValue(taskObject);
-                                dialog.dismiss();
-
-                            }
-                        })
-                        .setNegativeButton("Cancel", new AlertDialog.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                final AlertDialog dialog = builder.create();
-                dialog.show();
-
-            }
-        });
-        reference_control.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                getAllTask(dataSnapshot);
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        Log.e(TAG, "onCancelled", databaseError.toException());
+                    }
+                });
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
             }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                getAllTask(dataSnapshot);
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-                taskDeletion(dataSnapshot);
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
         });
     }
 
-    private void getAllTask(DataSnapshot dataSnapshot) {
 
-        reference_control = database_control.getReference("Tareas");
 
-        for (DataSnapshot singleSnapshot : dataSnapshot.getChildren()) {
-            /*Task pregunta = singleSnapshot.getValue(Task.class);*/
-            pregunta = dataSnapshot.child("pregunta").getValue(String.class);
-            respuesta = dataSnapshot.child("respuesta").getValue(String.class);
-            categoria = dataSnapshot.child("categoria").getValue(String.class);
-            fecha = dataSnapshot.child("fecha").getValue(String.class);
-            respondida = dataSnapshot.child("respondida").getValue(Boolean.class);
-        }
-        allTask.add(new Task(pregunta, categoria, respuesta, fecha, respondida, uid, uid_resp));
-        recyclerViewAdapter = new RecyclerViewAdapter(AnswerActivity.this, allTask);
-        recyclerView.setAdapter(recyclerViewAdapter);
-    }
-
-    private void taskDeletion(DataSnapshot dataSnapshot) {
-        for (DataSnapshot data : dataSnapshot.getChildren()) {
-            String pregunta = data.child("pregunta").getValue().toString();
-            for (int i = 0; i < allTask.size(); i++) {
-                if (allTask.get(i).getPregunta().equals(pregunta)) {
-                    allTask.remove(i);
-                }
-            }
-            Log.d(TAG, "Task title " + pregunta);
-            recyclerViewAdapter.notifyDataSetChanged();
-            recyclerViewAdapter = new RecyclerViewAdapter(AnswerActivity.this, allTask);
-            recyclerView.setAdapter(recyclerViewAdapter);
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

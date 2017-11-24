@@ -27,4 +27,8 @@
     <string name="pregunta_dialog">Pregunta:</string>
     <string name="category_dialog">Categoria:</string>
     <string name="inserta_respuesta">Digita tu Respuesta:</string>
+    <string name="fecha_activity">Fecha:</string>
+    <string name="respondida_activity">Ya Fue Respondida:</string>
+    <string name="uid_preg_activity">Usuario Preguntó:</string>
+    <string name="uid_resp_activity">Usuario Respondió:</string>
 </resources>

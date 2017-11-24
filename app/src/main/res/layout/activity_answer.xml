@@ -7,51 +7,74 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/app_bar" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/task_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_above="@+id/add_task_wrapper"
-            android:orientation="vertical"
-            android:layout_marginBottom="60dp"/>
-        <LinearLayout
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:orientation="horizontal"
-            android:weightSum="1">
-            <EditText
-                android:id="@+id/add_task_box"
-                android:layout_width="0dp"
-                android:inputType="text"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:visibility="invisible"/>
+            android:hint="@string/pregunta_dialog"
+            android:paddingTop="10dp"
+            android:id="@+id/pregunta_activity"/>
 
-            <!--<android.support.design.widget.FloatingActionButton
-                android:id="@+id/add_task_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:backgroundTint="@color/colorPrimary"
-                android:src="@android:drawable/ic_input_add"
-                android:layout_marginLeft="20dp"/>-->
-            <!--<Button
-                android:id="@+id/add_task_button"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="@string/add_task_button"
-                android:padding="12dp"
-                android:layout_margin="0dp"
-                android:layout_weight="3"/>-->
-        </LinearLayout>
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/category_dialog"
+        android:paddingTop="40dp"
+        android:id="@+id/categoria_activity"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/fecha_activity"
+            android:paddingTop="70dp"
+            android:id="@+id/fecha_activity"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/respondida_activity"
+            android:paddingTop="100dp"
+            android:id="@+id/respondida_activity"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/uid_preg_activity"
+            android:paddingTop="130dp"
+            android:id="@+id/uid_preg_activity"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/uid_resp_activity"
+            android:paddingTop="160dp"
+            android:id="@+id/uid_resp_activity"/>
+
+        <EditText
+            android:id="@+id/answer_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="190dp"
+            android:inputType="text"
+            android:textColor="#000000"
+            android:hint="@string/inserta_respuesta"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="240dp"
+            android:text="@string/responder"
+            android:id="@+id/btn_responder"/>
+
+
+
+
+
     </FrameLayout>
 </LinearLayout>
 
