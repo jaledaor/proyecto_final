@@ -31,4 +31,5 @@
     <string name="respondida_activity">Ya Fue Respondida:</string>
     <string name="uid_preg_activity">Usuario Preguntó:</string>
     <string name="uid_resp_activity">Usuario Respondió:</string>
+    <string name="volver">Volver</string>
 </resources>

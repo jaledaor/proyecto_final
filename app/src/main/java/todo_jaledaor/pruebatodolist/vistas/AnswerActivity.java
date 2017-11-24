@@ -55,6 +55,9 @@ public class AnswerActivity extends AppCompatActivity {
     public String categoria = "";
     public Boolean respondida = false;
 
+
+    String nombre_usuario_pregunta="";
+    String nombre_usuario_responde="";
     String pregunta_r = "";
     String categoria_r ="";
     String fecha_r ="";
@@ -67,6 +70,7 @@ public class AnswerActivity extends AppCompatActivity {
     private FirebaseAuth mAuth_control;
     private FirebaseDatabase database_control;
     private DatabaseReference reference_control;
+    private DatabaseReference reference_control_2;
     private List<Task> allTask;
 
 
@@ -98,8 +102,10 @@ public class AnswerActivity extends AppCompatActivity {
         uid = "";
         uid = mAuth_control.getCurrentUser().getUid().toString();
         database_control = FirebaseDatabase.getInstance();
-        reference_control = database_control.getReference("Tareas");
+        reference_control_2 = database_control.getReference();
+
         Button btn_responder = findViewById(R.id.btn_responder);
+        Button btn_volver = findViewById(R.id.btn_volver);
         Intent intent = getIntent();
 
         pregunta_r = intent.getStringExtra("pregunta_review");
@@ -109,13 +115,37 @@ public class AnswerActivity extends AppCompatActivity {
         uid_resp_r = intent.getStringExtra("uid_resp_review");
         respondida_r = intent.getBooleanExtra("respondida_dialog", false);
 
+        reference_control_2.child("usuarios").child(uid_preg_r).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                nombre_usuario_pregunta=dataSnapshot.child("nombres").getValue().toString();
+            }
 
-        pregunta_screen.setText(pregunta_r);
-        catergoria_screen.setText(categoria_r);
-        fecha_screen.setText(fecha_r);
-        respondida_screen.setText("" + respondida_r);
-        uid_preg_screen.setText(uid_preg_r);
-        uid_resp_screen.setText(uid_resp_r);
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        reference_control_2.child("usuarios").child(uid_resp_r).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                nombre_usuario_responde=dataSnapshot.child("nombres").getValue().toString();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        pregunta_screen.setText("Pregunta: "+pregunta_r);
+        catergoria_screen.setText("Categoria: "+categoria_r);
+        fecha_screen.setText("Fecha: "+fecha_r);
+        respondida_screen.setText("¿Ya Fue Respondída? " + respondida_r);
+        uid_preg_screen.setText("Uid Usuario Que Creó la Pregunta: "+nombre_usuario_pregunta);
+        uid_resp_screen.setText("Uid Usuario Que Respondió la Pregunta: "+nombre_usuario_responde);
 
 
         btn_responder.setOnClickListener(new View.OnClickListener() {
@@ -145,6 +175,14 @@ public class AnswerActivity extends AppCompatActivity {
                 startActivity(intent);
             }
 
+        });
+
+        btn_volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
         });
     }
 
