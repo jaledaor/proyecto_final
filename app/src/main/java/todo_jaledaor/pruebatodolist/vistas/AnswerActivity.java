@@ -102,7 +102,7 @@ public class AnswerActivity extends AppCompatActivity {
         uid = "";
         uid = mAuth_control.getCurrentUser().getUid().toString();
         database_control = FirebaseDatabase.getInstance();
-        reference_control_2 = database_control.getReference();
+        reference_control_2 = database_control.getReference("usuarios");
 
         Button btn_responder = findViewById(R.id.btn_responder);
         Button btn_volver = findViewById(R.id.btn_volver);
@@ -115,10 +115,10 @@ public class AnswerActivity extends AppCompatActivity {
         uid_resp_r = intent.getStringExtra("uid_resp_review");
         respondida_r = intent.getBooleanExtra("respondida_dialog", false);
 
-        reference_control_2.child("usuarios").child(uid_preg_r).addValueEventListener(new ValueEventListener() {
+        reference_control_2.child(uid_preg_r).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                nombre_usuario_pregunta=dataSnapshot.child("nombres").getValue().toString();
+                nombre_usuario_pregunta=dataSnapshot.child("nombres").getValue(String.class);
             }
 
             @Override
@@ -127,10 +127,10 @@ public class AnswerActivity extends AppCompatActivity {
             }
         });
 
-        reference_control_2.child("usuarios").child(uid_resp_r).addValueEventListener(new ValueEventListener() {
+        reference_control_2.child(uid_resp_r).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                nombre_usuario_responde=dataSnapshot.child("nombres").getValue().toString();
+                nombre_usuario_responde=dataSnapshot.child("nombres").getValue(String.class);
             }
 
             @Override
@@ -144,8 +144,8 @@ public class AnswerActivity extends AppCompatActivity {
         catergoria_screen.setText("Categoria: "+categoria_r);
         fecha_screen.setText("Fecha: "+fecha_r);
         respondida_screen.setText("¿Ya Fue Respondída? " + respondida_r);
-        uid_preg_screen.setText("Uid Usuario Que Creó la Pregunta: "+nombre_usuario_pregunta);
-        uid_resp_screen.setText("Uid Usuario Que Respondió la Pregunta: "+nombre_usuario_responde);
+        uid_preg_screen.setText("Uid Usuario Que Creó la Pregunta: "+uid_preg_r);
+        uid_resp_screen.setText("Uid Usuario Que Respondió la Pregunta: "+uid_resp_r);
 
 
         btn_responder.setOnClickListener(new View.OnClickListener() {
